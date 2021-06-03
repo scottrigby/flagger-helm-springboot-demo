@@ -1,0 +1,6 @@
+namespace: petclinic
+resources:
+  - petclinic.yaml
+  - frontend.yaml
+  # - canary.yaml
+  - generator.yaml
