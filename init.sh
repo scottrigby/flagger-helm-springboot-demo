@@ -44,6 +44,6 @@ pe "helm install petclinic chart/spring-boot-example/ -n petclinic"
 wait
 clear
 
-pe "helm upgrade petclinic spring-boot-example/ --set image.tag=1.0.1"
+pe "helm upgrade petclinic chart/spring-boot-example/ --set image.tag=1.0.1"
 wait
 clear
