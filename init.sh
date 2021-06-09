@@ -1,29 +1,49 @@
 #!/bin/env bash
+# shellcheck source=demo-magic.sh
+source demo-magic.sh
+
+clear
 
 k3d cluster delete 101 > /dev/null 2>&1 || true
 
-k3d cluster create 101 -p "8080:80@loadbalancer" -a 3 --wait
+k3d cluster create 101 -p "8080:80@loadbalancer" -a 3 --wait > /dev/null 2>&1
 
-flux install
+pe "flux install"
+wait
+clear
 
-kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/runtime_git.yaml
+pe "kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/runtime_git.yaml"
+wait
+clear
 
-kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/dev_cluster.yaml
+pe "kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/dev_cluster.yaml"
+wait
+clear
 
-sleep 10
+pe "linkerd check"
+wait
+clear
 
-linkerd check
+pe "linkerd viz check"
+wait
+clear
 
-sleep 10
+pe "kubectl get deploy -n kube-system traefik -o yaml | linkerd inject --ingress - | kubectl apply -f -"
+wait
+clear
 
-linkerd viz check
+pe "kubectl apply -k supporting-files/"
+wait
+clear
 
-kubectl get deploy -n kube-system traefik -o yaml | linkerd inject --ingress - | kubectl apply -f -
+pe "kubectl ns petclinic"
+wait
+clear
 
-kubectl apply -k supporting-files/
+pe "helm install petclinic chart/spring-boot-example/ -n petclinic"
+wait
+clear
 
-kubectl ns petclinic
-
-helm install petclinic chart/spring-boot-example/ -n petclinic
-
-helm upgrade petclinic spring-boot-example/ --set image.tag=1.0.1
+pe "helm upgrade petclinic spring-boot-example/ --set image.tag=1.0.1"
+wait
+clear
