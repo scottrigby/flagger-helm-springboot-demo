@@ -10,8 +10,16 @@ kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/runt
 
 kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/dev_cluster.yaml
 
+sleep 10
+
 linkerd check
 
 kubectl get deploy -n kube-system traefik -o yaml | linkerd inject --ingress - | kubectl apply -f -
 
-kubectl apply -k raw_yaml/
+kubectl apply -k supporting-files/
+
+kubectl ns petclinic
+
+helm install petclinic chart/spring-boot-example/ -n petclinic
+
+helm upgrade petclinic spring-boot-example/ --set image.tag=1.0.1

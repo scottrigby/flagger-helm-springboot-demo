@@ -1,0 +1,3 @@
+resources:
+  - petclinicns.yaml
+  - generator.yaml

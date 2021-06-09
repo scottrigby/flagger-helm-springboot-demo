@@ -1,0 +1,31 @@
+{{- if .Values.canary.enabled }}
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "spring-boot-example.labels" . | nindent 4 }}
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name:  {{ .Release.Name }}
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name:  {{ .Release.Name }}
+  service:
+    port: {{ .Values.service.port }}
+  analysis:
+    interval: {{ .Values.canary.analysis.interval }}
+    threshold: {{ .Values.canary.analysis.threshold }}
+    maxWeight: {{ .Values.canary.analysis.maxWeight }}
+    stepWeight: {{ .Values.canary.analysis.stepWeight }}
+    metrics:
+    - name: request-success-rate
+      threshold: {{ .Values.canary.thresholds.successRate }}
+      interval: 1m
+    - name: request-duration
+      threshold: {{ .Values.canary.thresholds.latency }}
+      interval: 1m
+{{- end }}
