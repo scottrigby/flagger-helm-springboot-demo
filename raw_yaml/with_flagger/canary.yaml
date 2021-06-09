@@ -9,15 +9,20 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: petclinic
+  # # HPA reference (optional)
+  # autoscalerRef:
+  #   apiVersion: autoscaling/v2beta1
+  #   kind: HorizontalPodAutoscaler
+  #   name: podinfo
   # the maximum time in seconds for the canary deployment
   # to make progress before it is rollback (default 600s)
   progressDeadlineSeconds: 60
   service:
     # name: frontend
     # ClusterIP port number
-    port: 80
+    port: 8080
     # container port number or name (optional)
-    # targetPort: 8080
+    targetPort: 8080
   analysis:
     # schedule interval (default 60s)
     interval: 5s
@@ -25,7 +30,7 @@ spec:
     threshold: 5
     # max traffic percentage routed to canary
     # percentage (0-100)
-    maxWeight: 75
+    maxWeight: 95
     # canary increment step
     # percentage (0-100)
     stepWeight: 5
