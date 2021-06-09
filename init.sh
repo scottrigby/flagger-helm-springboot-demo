@@ -2,7 +2,7 @@
 
 k3d cluster delete 101 > /dev/null 2>&1 || true
 
-k3d cluster create 101 -p "8080:80@loadbalancer" --wait
+k3d cluster create 101 -p "8080:80@loadbalancer" -a 3 --wait
 
 flux install
 
@@ -13,6 +13,10 @@ kubectl apply -f ~/git_repos/buoyant/gitops_examples/flux/runtime/manifests/dev_
 sleep 10
 
 linkerd check
+
+sleep 10
+
+linkerd viz check
 
 kubectl get deploy -n kube-system traefik -o yaml | linkerd inject --ingress - | kubectl apply -f -
 
